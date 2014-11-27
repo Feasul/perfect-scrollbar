@@ -110,7 +110,7 @@
       var scrollbarXBottom = getInt($scrollbarXRail.css('bottom'));
       var isScrollbarXUsingBottom = scrollbarXBottom === scrollbarXBottom; // !isNaN
       var scrollbarXTop = isScrollbarXUsingBottom ? null : getInt($scrollbarXRail.css('top'));
-      var railBorderXWidth = getInt($scrollbarXRail.css('borderLeftWidth')) + getInt($scrollbarXRail.css('borderRightWidth'));
+      var railBorderXWidth;
 
       var $scrollbarYRail = $("<div class='ps-scrollbar-y-rail'>").appendTo($this);
       var $scrollbarY = $("<div class='ps-scrollbar-y'>").appendTo($scrollbarYRail);
@@ -120,8 +120,22 @@
       var scrollbarYRight = getInt($scrollbarYRail.css('right'));
       var isScrollbarYUsingRight = scrollbarYRight === scrollbarYRight; // !isNaN
       var scrollbarYLeft = isScrollbarYUsingRight ? null : getInt($scrollbarYRail.css('left'));
-      var railBorderYWidth = getInt($scrollbarYRail.css('borderTopWidth')) + getInt($scrollbarYRail.css('borderBottomWidth'));
+      var railBorderYWidth;
+      
+      function getRailBorderXWidth() {
+        if (isNaN(railBorderXWidth)) {
+          railBorderXWidth = getInt($scrollbarXRail.css('borderLeftWidth')) + getInt($scrollbarXRail.css('borderRightWidth'));
+        }
+        return railBorderXWidth;
+      }
 
+      function getRailBorderYWidth() {
+        if (isNaN(railBorderYWidth)) {
+          railBorderYWidth = getInt($scrollbarYRail.css('borderTopWidth')) + getInt($scrollbarYRail.css('borderBottomWidth'));
+        }
+        return railBorderYWidth;
+      }
+      
       function updateScrollTop(currentTop, deltaY) {
         var newTop = currentTop + deltaY;
         var maxTop = containerHeight - scrollbarYHeight;
@@ -195,8 +209,8 @@
         }
         $scrollbarYRail.css(railYOffset);
 
-        $scrollbarX.css({left: scrollbarXLeft, width: scrollbarXWidth - railBorderXWidth});
-        $scrollbarY.css({top: scrollbarYTop, height: scrollbarYHeight - railBorderYWidth});
+        $scrollbarX.css({left: scrollbarXLeft, width: scrollbarXWidth - getRailBorderXWidth()});
+        $scrollbarY.css({top: scrollbarYTop, height: scrollbarYHeight - getRailBorderYWidth()});
       }
 
       function updateGeometry() {
